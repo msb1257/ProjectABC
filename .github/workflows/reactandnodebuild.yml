@@ -30,6 +30,16 @@ jobs:
       working-directory: frontend
       run: npm run build
 
+    - name: Check Frontend Build Artifacts
+      working-directory: frontend
+      run: |
+        echo "Listing frontend directory:"
+        ls -ltr
+        echo "Listing dist folder (if exists):"
+        ls -ltr dist || echo "dist folder not found"
+        echo "Listing build folder (if exists):"
+        ls -ltr build || echo "build folder not found"
+
     # ---------------- BACKEND ----------------
     - name: Install Backend Dependencies
       working-directory: backend
@@ -43,6 +53,16 @@ jobs:
         else
           echo "No backend build step found, skipping"
         fi
+
+    - name: Check Backend Build Artifacts
+      working-directory: backend
+      run: |
+        echo "Listing backend directory:"
+        ls -ltr
+        echo "Listing dist folder (if exists):"
+        ls -ltr dist || echo "dist folder not found"
+        echo "Listing build folder (if exists):"
+        ls -ltr build || echo "build folder not found"
 
     # ---------------- SONARQUBE ----------------
     - name: SonarQube Scan
