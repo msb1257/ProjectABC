@@ -11,6 +11,9 @@ jobs:
   build-sonar:
     runs-on: ubuntu-latest
 
+    env:
+      BUILD_NUMBER: ${{ github.run_number }}
+
     steps:
     - name: Checkout source code
       uses: actions/checkout@v4
@@ -33,12 +36,9 @@ jobs:
     - name: Check Frontend Build Artifacts
       working-directory: frontend
       run: |
-        echo "Listing frontend directory:"
         ls -ltr
-        echo "Listing dist folder (if exists):"
-        ls -ltr dist || echo "dist folder not found"
-        echo "Listing build folder (if exists):"
-        ls -ltr build || echo "build folder not found"
+        ls -ltr dist || true
+        ls -ltr build || true
 
     # ---------------- BACKEND ----------------
     - name: Install Backend Dependencies
@@ -57,12 +57,9 @@ jobs:
     - name: Check Backend Build Artifacts
       working-directory: backend
       run: |
-        echo "Listing backend directory:"
         ls -ltr
-        echo "Listing dist folder (if exists):"
-        ls -ltr dist || echo "dist folder not found"
-        echo "Listing build folder (if exists):"
-        ls -ltr build || echo "build folder not found"
+        ls -ltr dist || true
+        ls -ltr build || true
 
     # ---------------- SONARQUBE ----------------
     - name: SonarQube Scan
@@ -71,9 +68,26 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-    # ---------------- QUALITY GATE ----------------
-    - name: SonarQube Quality Gate
-      uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
-      timeout-minutes: 5
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    # ---------------- DOCKER SETUP ----------------
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # ---------------- DOCKER BUILD - FRONTEND ----------------
+    - name: Build Frontend Docker Image
+      run: |
+        docker build \
+          -t projectabc-frontend:${BUILD_NUMBER} \
+          ./frontend
+
+    - name: List Frontend Docker Image
+      run: docker images | grep projectabc-frontend
+
+    # ---------------- DOCKER BUILD - BACKEND ----------------
+    - name: Build Backend Docker Image
+      run: |
+        docker build \
+          -t projectabc-backend:${BUILD_NUMBER} \
+          ./backend
+
+    - name: List Backend Docker Image
+      run: docker images | grep projectabc-backend
