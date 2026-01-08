@@ -41,7 +41,7 @@ jobs:
       run: npm install
 
     - name: Build Backend (if build script exists)
-      working-directoryworking-directory: backend
+      working-directory: backend
       run: |
         if npm run | grep -q "build"; then
           npm run build
