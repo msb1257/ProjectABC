@@ -5,6 +5,7 @@
 `docker network create demo`
 
 ### Build the client 
+##14f971c16a1c93947a5034db51266cf2e721f02e
 
 ```sh
 cd mern/frontend
