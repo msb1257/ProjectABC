@@ -13,6 +13,8 @@ jobs:
 
     env:
       BUILD_NUMBER: ${{ github.run_number }}
+      ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
+      ARTIFACTORY_REPO: ${{ secrets.ARTIFACTORY_DOCKER_REPO }}
 
     steps:
     - name: Checkout source code
@@ -33,33 +35,19 @@ jobs:
       working-directory: frontend
       run: npm run build
 
-    - name: Check Frontend Build Artifacts
-      working-directory: frontend
-      run: |
-        ls -ltr
-        ls -ltr dist || true
-        ls -ltr build || true
-
     # ---------------- BACKEND ----------------
     - name: Install Backend Dependencies
       working-directory: backend
       run: npm install
 
     - name: Build Backend (if build script exists)
-      working-directory: backend
+      working-directoryworking-directory: backend
       run: |
         if npm run | grep -q "build"; then
           npm run build
         else
           echo "No backend build step found, skipping"
         fi
-
-    - name: Check Backend Build Artifacts
-      working-directory: backend
-      run: |
-        ls -ltr
-        ls -ltr dist || true
-        ls -ltr build || true
 
     # ---------------- SONARQUBE ----------------
     - name: SonarQube Scan
@@ -72,22 +60,30 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    # ---------------- DOCKER BUILD - FRONTEND ----------------
-    - name: Build Frontend Docker Image
+    # ---------------- ARTIFACTORY LOGIN ----------------
+    - name: Login to Artifactory Docker Registry
+      run: |
+        echo "${{ secrets.ARTIFACTORY_PASSWORD }}" | docker login \
+          ${ARTIFACTORY_URL} \
+          -u "${{ secrets.ARTIFACTORY_USERNAME }}" \
+          --password-stdin
+
+    # ---------------- DOCKER BUILD & PUSH - FRONTEND ----------------
+    - name: Build & Push Frontend Docker Image
       run: |
         docker build \
-          -t projectabc-frontend:${BUILD_NUMBER} \
+          -t ${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/projectabc-frontend:${BUILD_NUMBER} \
           ./frontend
 
-    - name: List Frontend Docker Image
-      run: docker images | grep projectabc-frontend
+        docker push \
+          ${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/projectabc-frontend:${BUILD_NUMBER}
 
-    # ---------------- DOCKER BUILD - BACKEND ----------------
-    - name: Build Backend Docker Image
+    # ---------------- DOCKER BUILD & PUSH - BACKEND ----------------
+    - name: Build & Push Backend Docker Image
       run: |
         docker build \
-          -t projectabc-backend:${BUILD_NUMBER} \
+          -t ${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/projectabc-backend:${BUILD_NUMBER} \
           ./backend
 
-    - name: List Backend Docker Image
-      run: docker images | grep projectabc-backend
+        docker push \
+          ${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/projectabc-backend:${BUILD_NUMBER}
