@@ -13,7 +13,7 @@ jobs:
 
     env:
       BUILD_NUMBER: ${{ github.run_number }}
-      ARTIFACTORY_URL: ${{ vars.ARTIFACTORY_URL }}
+      ARTIFACTORY_URL: ${{ vars.NEW_ARTIFACTORY_URL }}
       ARTIFACTORY_REPO: ${{ vars.ARTIFACTORY_REPO }}
 
     steps:
@@ -65,7 +65,7 @@ jobs:
     - name: Login to Artifactory Docker Registry
       run: |
         echo "${{ secrets.ARTIFACTORY_PASSWORD }}" | docker login \
-          ${{ vars.ARTIFACTORY_URL }} \
+          $ARTIFACTORY_URL \
           -u "${{ secrets.ARTIFACTORY_USERNAME }}" \
           --password-stdin
 
@@ -73,7 +73,7 @@ jobs:
     - name: Build Frontend Docker Image
       run: |
         docker build \
-          -t $ARTIFACTORY_URL/$ARTIFACTORY_REPO/projectabc-frontend:$BUILD_NUMBER \
+          -t ARTIFACTORY_URL/$ARTIFACTORY_REPO/projectabc-frontend:$BUILD_NUMBER \
           ./frontend
 
     - name: Push Frontend Docker Image
