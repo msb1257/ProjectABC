@@ -73,7 +73,7 @@ jobs:
     - name: Build Frontend Docker Image
       run: |
         docker build \
-          -t ARTIFACTORY_URL/$ARTIFACTORY_REPO/projectabc-frontend:$BUILD_NUMBER \
+          -t $ARTIFACTORY_URL/$ARTIFACTORY_REPO/projectabc-frontend:$BUILD_NUMBER \
           ./frontend
 
     - name: Push Frontend Docker Image
