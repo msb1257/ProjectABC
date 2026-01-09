@@ -50,4 +50,45 @@ jobs:
           echo "No backend build step found, skipping"
         fi
 
-    # ---------------- SONARQUBE -----
+    # ---------------- SONARQUBE ----------------
+    - name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@v2
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+    # ---------------- DOCKER SETUP ----------------
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # ---------------- DOCKER LOGIN ----------------
+    - name: Login to Artifactory Docker Registry
+      run: |
+        echo "${{ secrets.ARTIFACTORY_PASSWORD }}" | docker login \
+          $ARTIFACTORY_URL \
+          -u "${{ secrets.ARTIFACTORY_USERNAME }}" \
+          --password-stdin
+
+    # ---------------- FRONTEND IMAGE ----------------
+    - name: Build Frontend Docker Image
+      run: |
+        docker build \
+          -t $ARTIFACTORY_URL/$ARTIFACTORY_REPO/projectabc-frontend:$BUILD_NUMBER \
+          ./frontend
+
+    - name: Push Frontend Docker Image
+      run: |
+        docker push \
+          $ARTIFACTORY_URL/$ARTIFACTORY_REPO/projectabc-frontend:$BUILD_NUMBER
+
+    # ---------------- BACKEND IMAGE ----------------
+    - name: Build Backend Docker Image
+      run: |
+        docker build \
+          -t $ARTIFACTORY_URL/$ARTIFACTORY_REPO/projectabc-backend:$BUILD_NUMBER \
+          ./backend
+
+    - name: Push Backend Docker Image
+      run: |
+        docker push \
+          $ARTIFACTORY_URL/$ARTIFACTORY_REPO/projectabc-backend:$BUILD_NUMBER
