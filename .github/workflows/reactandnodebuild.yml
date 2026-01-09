@@ -65,7 +65,7 @@ jobs:
     - name: Login to Artifactory Docker Registry
       run: |
         echo "${{ secrets.ARTIFACTORY_PASSWORD }}" | docker login \
-          $ARTIFACTORY_URL \
+          ${{ vars.ARTIFACTORY_URL }} \
           -u "${{ secrets.ARTIFACTORY_USERNAME }}" \
           --password-stdin
 
