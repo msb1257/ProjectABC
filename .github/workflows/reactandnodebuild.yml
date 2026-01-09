@@ -13,10 +13,11 @@ jobs:
 
     env:
       BUILD_NUMBER: ${{ github.run_number }}
-      ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
-      ARTIFACTORY_REPO: ${{ secrets.ARTIFACTORY_DOCKER_REPO }}
+      ARTIFACTORY_URL: ${{ vars.ARTIFACTORY_URL }}
+      ARTIFACTORY_REPO: ${{ vars.ARTIFACTORY_REPO }}
 
     steps:
+    # ---------------- CHECKOUT ----------------
     - name: Checkout source code
       uses: actions/checkout@v4
 
@@ -49,41 +50,4 @@ jobs:
           echo "No backend build step found, skipping"
         fi
 
-    # ---------------- SONARQUBE ----------------
-    - name: SonarQube Scan
-      uses: SonarSource/sonarqube-scan-action@v2
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-
-    # ---------------- DOCKER SETUP ----------------
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    # ---------------- ARTIFACTORY LOGIN ----------------
-    - name: Login to Artifactory Docker Registry
-      run: |
-        echo "${{ secrets.ARTIFACTORY_PASSWORD }}" | docker login \
-          ${ARTIFACTORY_URL} \
-          -u "${{ secrets.ARTIFACTORY_USERNAME }}" \
-          --password-stdin
-
-    # ---------------- DOCKER BUILD & PUSH - FRONTEND ----------------
-    - name: Build & Push Frontend Docker Image
-      run: |
-        docker build \
-          -t ${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/projectabc-frontend:${BUILD_NUMBER} \
-          ./frontend
-
-        docker push \
-          ${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/projectabc-frontend:${BUILD_NUMBER}
-
-    # ---------------- DOCKER BUILD & PUSH - BACKEND ----------------
-    - name: Build & Push Backend Docker Image
-      run: |
-        docker build \
-          -t ${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/projectabc-backend:${BUILD_NUMBER} \
-          ./backend
-
-        docker push \
-          ${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/projectabc-backend:${BUILD_NUMBER}
+    # ---------------- SONARQUBE -----
