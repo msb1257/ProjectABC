@@ -56,7 +56,14 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-
+    - name: check report
+      run : |
+        echo "hi report"
+        sleep 2
+        cat .scannerwork/report-task.txt
+        sleep 2
+        echo "hello report"
+  
     
     # ---------------- QUALITY GATE ----------------
     - name: SonarQube Quality Gate
