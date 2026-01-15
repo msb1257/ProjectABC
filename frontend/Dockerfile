@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package.json .
 
 # Run the command inside your image filesystem
-RUN npm install
+RUN npm install --ignore-scripts
 
 # Inform Docker that the container is listening on the specified port at runtime
 EXPOSE 5173
