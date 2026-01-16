@@ -1,0 +1,43 @@
+name: Dev-Deployment
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Application to EKS
+    runs-on: self-hosted   # change to ubuntu-latest if needed
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: AWS Credentials Setup (Echo Only)
+        run: |
+          echo "Using AWS Region: ${{ secrets.AWS_REGION }}"
+          echo "AWS credentials are configured via GitHub Secrets"
+
+      - name: Update kubeconfig for EKS
+        run: |
+          echo "Updating kubeconfig..."
+          aws eks update-kubeconfig \
+            --region ${{ secrets.AWS_REGION }} \
+            --name my-eks-cluster
+
+      - name: Verify Cluster Access
+        run: |
+          echo "Checking cluster nodes"
+          kubectl get nodes
+
+      - name: Deploy to Kubernetes
+        run: |
+          echo "Applying Kubernetes manifests"
+          kubectl apply -f k8s/deployment.yaml
+
+      - name: Verify Deployment
+        run: |
+          echo "Checking pods"
+          kubectl get pods
