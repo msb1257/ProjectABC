@@ -52,6 +52,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
   
 jobs:
@@ -88,6 +89,13 @@ jobs:
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
       run: terraform fmt -check
+
+    - name: Configure AWS credentials using OIDC
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::787089123165:role/github-actions-oidc-role
+        aws-region: ap-south-1
+
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
