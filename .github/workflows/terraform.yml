@@ -84,7 +84,7 @@ jobs:
         echo "hello all"
         pwd
         ls -ltra
-        echo "hi all"
+        echo "hi"
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
