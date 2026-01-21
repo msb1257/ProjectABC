@@ -35,8 +35,9 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
+      working-directory: eks
       run: |
-        cd eks
+        
         terraform init
         echo "hello all"
         pwd
@@ -45,6 +46,7 @@ jobs:
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
+      working-directory: eks
       run: terraform fmt -check
 
     - name: Configure AWS credentials using OIDC
@@ -56,6 +58,7 @@ jobs:
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
+      working-directory: eks
       run: terraform plan -input=false
 
 
