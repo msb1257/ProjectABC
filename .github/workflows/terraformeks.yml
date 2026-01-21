@@ -40,7 +40,6 @@ jobs:
         
         terraform init
         echo "hello all"
-        terraform plan
         pwd
         ls -ltra
         echo "hi"
