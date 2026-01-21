@@ -40,9 +40,11 @@ jobs:
         
         terraform init
         echo "hello all"
+        terraform plan
         pwd
         ls -ltra
         echo "hi"
+        
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
