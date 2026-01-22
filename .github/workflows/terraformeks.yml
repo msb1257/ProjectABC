@@ -49,6 +49,15 @@ jobs:
     #- name: Terraform Format
       #working-directory: MYEKS
       #run: terraform fmt -check
+    - name: test
+      run: |
+          cd MYEKS
+          aws ec2 create-key-pair \
+          --key-name ed-office \
+          --region ap-south-1 \
+          --query 'KeyMaterial' \
+          --output text > ed-office.pem
+          chmod 400 ed-office.pem
 
     - name: Configure AWS credentials using OIDC
       uses: aws-actions/configure-aws-credentials@v4
