@@ -68,7 +68,10 @@ jobs:
     - name: Terraform Apply
       working-directory: MYEKS
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -auto-approve -input=false
+      run: |
+        terraform import aws_iam_role.master ed-eks-master
+        terraform import aws_iam_role.worker ed-eks-worker
+        terraform apply -auto-approve -input=false
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve -input=false
