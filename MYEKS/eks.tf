@@ -1,6 +1,6 @@
 resource "aws_eks_cluster" "eks" {
   name = "ed-eks-01"
-  version = "1.22"
+  version = "1.31"
   role_arn = aws_iam_role.master.arn
 
   vpc_config {
@@ -15,5 +15,6 @@ resource "aws_eks_cluster" "eks" {
     aws_subnet.pub_sub1,
     aws_subnet.pub_sub2,
   ]
+
 
 }
