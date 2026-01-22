@@ -5,10 +5,10 @@ resource "aws_eks_node_group" "frontend" {
   capacity_type = "ON_DEMAND"
   disk_size = "20"
   instance_types = ["t3.medium"]
-  remote_access {
+  /*remote_access {
     ec2_ssh_key = "ed-office"
     source_security_group_ids = [aws_security_group.node.id]
-  } 
+  } */
 
   taint {
     key = "frontend"
@@ -45,10 +45,10 @@ resource "aws_eks_node_group" "backend" {
   capacity_type = "ON_DEMAND"
   disk_size = "20"
   instance_types = ["t3.medium"]
-  remote_access {
+  /*remote_access {
     ec2_ssh_key = "ed-office"
     source_security_group_ids = [aws_security_group.node.id]
-  } 
+  } */
   
   labels =  tomap({env = "dev"})
   
@@ -70,5 +70,6 @@ resource "aws_eks_node_group" "backend" {
     aws_subnet.pub_sub2,
   ]
 }
+
 
 
