@@ -60,7 +60,11 @@ jobs:
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       working-directory: MYEKS
-      run: terraform plan -input=false
+      run: |
+         #terraform plan -input=false
+         terraform destroy -target=aws_eks_node_group.prod
+         terraform apply
+
 
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
