@@ -10,11 +10,11 @@ resource "aws_eks_node_group" "frontend" {
     source_security_group_ids = [aws_security_group.node.id]
   } */
 
-  taint {
-    key = "frontend"
-    value = "yes"
-    effect = "NO_SCHEDULE"
-  }
+  #taint {
+   # key = "frontend"
+    #value = "yes"
+    #effect = "NO_SCHEDULE"
+  #}
   
   subnet_ids      = [aws_subnet.pub_sub1.id, aws_subnet.pub_sub2.id]
 
@@ -70,6 +70,7 @@ resource "aws_eks_node_group" "backend" {
     aws_subnet.pub_sub2,
   ]
 }
+
 
 
 
