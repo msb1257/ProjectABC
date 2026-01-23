@@ -2,6 +2,11 @@ resource "aws_eks_cluster" "eks" {
   name = "ed-eks-01"
   version = "1.31"
   role_arn = aws_iam_role.master.arn
+lifecycle {
+    prevent_destroy = true
+  }
+
+  bootstrap_self_managed_addons = false
 
   vpc_config {
     subnet_ids = [aws_subnet.pub_sub1.id, aws_subnet.pub_sub2.id]
@@ -18,3 +23,4 @@ resource "aws_eks_cluster" "eks" {
 
 
 }
+
