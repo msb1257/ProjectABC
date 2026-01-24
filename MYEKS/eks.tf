@@ -2,6 +2,9 @@ resource "aws_eks_cluster" "eks" {
   name = "ed-eks-01"
   version = "1.31"
   role_arn = aws_iam_role.master.arn
+access_config {
+    authentication_mode = "API_AND_CONFIG_MAP"
+  }
 lifecycle {
     prevent_destroy = true
   }
@@ -30,6 +33,7 @@ lifecycle {
 
 
 }
+
 
 
 
