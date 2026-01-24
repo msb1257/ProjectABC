@@ -23,7 +23,7 @@ jobs:
         shell: bash
 
     steps:
-    # Checkout the repository to the GitHub Actions runner
+    ## Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v4
 
@@ -62,7 +62,6 @@ jobs:
       working-directory: MYEKS
       run: |
          terraform plan -input=false
-         terraform destroy -target=aws_eks_node_group.prod
 
 
 
@@ -72,9 +71,9 @@ jobs:
       working-directory: MYEKS
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
-        terraform import aws_iam_role.master ed-eks-master
-        terraform import aws_iam_role.worker ed-eks-worker
-        terraform import aws_eks_cluster.eks ed-eks-01
+        #terraform import aws_iam_role.master ed-eks-master
+        #terraform import aws_iam_role.worker ed-eks-worker
+        #terraform import aws_eks_cluster.eks ed-eks-01
         terraform apply -auto-approve -input=false
 
     - name: Terraform Destroy
