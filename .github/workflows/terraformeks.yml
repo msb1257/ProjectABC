@@ -71,8 +71,9 @@ jobs:
       working-directory: MYEKS
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
-        #terraform import aws_iam_role.master ed-eks-master
-        #terraform import aws_iam_role.worker ed-eks-worker
+        terraform import aws_iam_role.master ed-eks-master
+        terraform import aws_iam_role.worker ed-eks-worker
+        terraform import aws_iam_policy.autoscaler arn:aws:iam::123456789012:policy/ed-eks-autoscaler-policy
         #terraform import aws_eks_cluster.eks ed-eks-01
         terraform apply -auto-approve -input=false
 
