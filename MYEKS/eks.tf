@@ -9,8 +9,15 @@ lifecycle {
   bootstrap_self_managed_addons = false
 
   vpc_config {
-    subnet_ids = [aws_subnet.pub_sub1.id, aws_subnet.pub_sub2.id]
-  }
+  subnet_ids = [
+    aws_subnet.pub_sub1.id,
+    aws_subnet.pub_sub2.id
+  ]
+
+  endpoint_public_access  = true
+  endpoint_private_access = false
+}
+
   
   depends_on = [
     aws_iam_role_policy_attachment.AmazonEKSClusterPolicy,
@@ -23,4 +30,5 @@ lifecycle {
 
 
 }
+
 
