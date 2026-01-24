@@ -2,7 +2,7 @@ name: 'aws-eks-setup'
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
   workflow_dispatch:
 
@@ -77,6 +77,7 @@ jobs:
         terraform import aws_iam_role.worker ed-eks-worker
         terraform import aws_iam_policy.autoscaler arn:aws:iam::123456789012:policy/ed-eks-autoscaler-policy
         terraform import aws_eks_cluster.eks ed-eks-01
+        exit 1
 
         terraform apply -auto-approve -input=false
 
