@@ -31,7 +31,7 @@ permissions:
   pull-requests: write
 
 env:
-  TERRAFORM_VERSION: '1.6.0'
+  TERRAFORM_VERSION: '1.9.0'
   AWS_REGION: 'ap-south-1'
   WORKING_DIR: 'eks'
 
@@ -67,7 +67,7 @@ jobs:
       # Step 4: Terraform Format Check
       - name: Terraform Format Check
         id: fmt
-        run: terraform fmt -check -recursive
+        run: terraform fmt -check
         continue-on-error: true
 
       # Step 5: Terraform Init
@@ -167,24 +167,30 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      # Step 5: Download Plan Artifact
+      # Step 5: Terraform Plan (for manual triggers)
+      - name: Terraform Plan (Manual Trigger)
+        if: github.event_name == 'workflow_dispatch'
+        run: terraform plan -no-color -input=false -out=tfplan
+
+      # Step 6: Download Plan Artifact (for automatic triggers)
       - name: Download Plan Artifact
+        if: github.event_name != 'workflow_dispatch'
         uses: actions/download-artifact@v4
         with:
           name: terraform-plan
           path: eks/
 
-      # Step 6: Terraform Apply
+      # Step 7: Terraform Apply
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
 
-      # Step 7: Get EKS Cluster Info
+      # Step 8: Get EKS Cluster Info
       - name: Get EKS Cluster Information
         run: |
           echo "## EKS Cluster Created Successfully! 🎉" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Cluster Details:" >> $GITHUB_STEP_SUMMARY
-          terraform output -json | jq -r 'to_entries[] | "- **\(.key)**: \(.value.value)"' >> $GITHUB_STEP_SUMMARY
+          terraform output -json | jq -r 'to_entries[] | select(.value.value != null) | "- **\(.key)**: \(.value.value)"' >> $GITHUB_STEP_SUMMARY
 
   terraform-destroy:
     name: 'Terraform Destroy'

@@ -95,7 +95,7 @@ Before running the workflow, ensure the following secrets are configured in your
 ## 💻 Local Development
 
 ### Prerequisites
-- [Terraform](https://www.terraform.io/downloads.html) >= 1.6.0
+- [Terraform](https://developer.hashicorp.com/terraform/install) >= 1.9.0
 - [AWS CLI](https://aws.amazon.com/cli/) configured with credentials
 - Appropriate IAM permissions
 
