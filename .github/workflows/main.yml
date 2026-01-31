@@ -4,12 +4,12 @@ name: Deploy to AWS EKS
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
     name: Deploy to AWS EKS
-    runs-on: ubuntu-latest
+    runs-on: jump-server
 
     steps:
     # Step 1: Check out the repository
